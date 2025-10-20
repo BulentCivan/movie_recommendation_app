@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true   # Eureka'dan otomatik servis keşfi
+          lower-case-service-id: true
+      routes:
+        - id: movie-service
+          uri: lb://movie-service
+          predicates:
+            - Path=/movie-service/**
+          filters:
+            - StripPrefix=1  # "/movie-service" kısmını kaldırır
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
