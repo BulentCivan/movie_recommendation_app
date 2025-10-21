@@ -1,14 +1,39 @@
 package com.movierecommendation.movieservice;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.movierecommendation.movieservice.Movie;
+import com.movierecommendation.movieservice.MovieService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/api/movies")
 public class MovieController {
 
-    @GetMapping("/api/movies/test")
-    public String test() {
-        System.out.println("Movie Service is working!");
-        return "Movie Service is working!";
+    private final MovieService movieService;
+
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
+    }
+
+    @GetMapping
+    public List<Movie> getAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GetMapping("/{id}")
+    public Movie getMovieById(@PathVariable Long id) {
+        return movieService.getMovieById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+    }
+
+    @PostMapping
+    public Movie addMovie(@RequestBody Movie movie) {
+        return movieService.addMovie(movie);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteMovie(@PathVariable Long id) {
+        movieService.deleteMovie(id);
     }
 }
